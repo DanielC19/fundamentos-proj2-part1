@@ -1,8 +1,10 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Vehiculo {
+    // Separador de CSV para lectura
+    public static final String SEPARATOR = ";";
     // Estos son los atributos de nuestra clase de clase Vehiculo
     public static ArrayList<Vehiculo> vehiculos = new ArrayList<>();
     public static int idActual = 1;
@@ -53,7 +55,7 @@ public class Vehiculo {
      * @return String
      */
     public String getInfo() {
-        String str = "Vehiculo de marca: " + this.marca + "con id de:" + this.id + ", con modelo: " + this.modelo + ", color: " + this.color
+        String str = "Vehiculo de marca: " + this.marca + " con id de:" + this.id + ", con modelo: " + this.modelo + ", color: " + this.color
                 + " y con valor: " + this.valorComercial;
         for (Sensor sensor : this.sensores) {
             str += sensor.getInfo() + "\n";
@@ -188,7 +190,7 @@ public class Vehiculo {
             }
         }
         if (!existe) {
-            str = "No hay sensores de tipo temperatura en ningún vehículo.";
+            return "No hay sensores de tipo temperatura en ningún vehículo.";
         }
         sensores.sort((s1, s2) -> Double.compare(s1.getValor(), s2.getValor()));
         for (Sensor sensor : sensores) {
@@ -201,9 +203,17 @@ public class Vehiculo {
      * * Lee el CSV de vehículos
      */
     public static void readCsv() {
-        BufferedReader bReader = new BufferedReader(new FileReader("vehiculos.csv"));
-        String str = bReader.readLine();
-        bReader.close();
+        try {
+            File file = new File("vehiculos.csv");
+            Scanner sc = new Scanner(file);
+
+            while (sc.hasNextLine()) {
+                String str = sc.nextLine();
+                String[] fields = str.split(";");
+                new Vehiculo(Integer.parseInt(fields[0]), fields[1], Double.parseDouble(fields[2]), fields[3]);
+            }
+            sc.close();
+        } catch (Exception e) {}
     }
 
     /**

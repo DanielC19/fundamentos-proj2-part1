@@ -2,9 +2,6 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static final String SEPARATOR = ";";
-    public static final String QUOTE = "\"";
-
     public static void main(String[] args) {
         mostrarMenu();
     }
@@ -108,7 +105,11 @@ public class Main {
                 int id = sc.nextInt();
                 System.out.println("A continuación tendrá la información de los sensores correspondientes al vehículo de ese ID");
                 Vehiculo vehiculo = Vehiculo.findById(id);
+                System.out.println(vehiculo.getId());
                 if (vehiculo != null) {
+                    if (vehiculo.getSensores().size() == 0) {
+                        System.out.println("Este vehículo no tiene sensores");
+                    }
                     for (Sensor sensor : vehiculo.getSensores()) {
                         System.out.println(sensor.getInfo());
                     }
@@ -128,9 +129,12 @@ public class Main {
             
             } else if (opcion == 10) {
 
-                System.out.println("A continuación tendrás la información de los vehículos almacenadoes en el documento de tipo TXT");
-                
-                
+                try {
+                    Vehiculo.readCsv();
+                    System.out.println("Se importaron los vehículos correctamente");                    
+                } catch (Exception e) {
+                    System.out.println("Error al cargar los datos");
+                }
 
             } else if (opcion == 666) {
 
